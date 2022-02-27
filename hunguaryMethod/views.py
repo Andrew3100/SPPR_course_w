@@ -3,6 +3,84 @@ from django.http import HttpRequest
 from django.http import HttpResponse
 from .models import *
 import random as r
+import numpy as np
+
+
+class TaskAssignment:
+
+    # Инициализация класса, обязательными входными параметрами являются матрица задач и метод распределения, среди которых есть два метода распределения, метод all_permutation или метод Венгрии.
+    def __init__(self, task_matrix, mode):
+        self.task_matrix = task_matrix
+        self.mode = mode
+        if mode == 'all_permutation':
+            self.min_cost, self.best_solution = self.all_permutation(task_matrix)
+        if mode == 'Hungary':
+            self.min_cost, self.best_solution, self.col_ind, self.row_ind, = self.Hungary(task_matrix)
+
+        # Полный метод аранжировки
+
+    def Hungary(self, task_matrix):
+        b = task_matrix.copy()
+        # Строка и столбец минус 0
+        for i in range(len(b)):
+            row_min = np.min(b[i])
+            for j in range(len(b[i])):
+                b[i][j] -= row_min
+        for i in range(len(b[0])):
+            col_min = np.min(b[:, i])
+            for j in range(len(b)):
+                b[j][i] -= col_min
+        line_count = 0
+        # Когда количество строк меньше длины матрицы, цикл
+        while (line_count < len(b)):
+            line_count = 0
+            row_zero_count = []
+            col_zero_count = []
+            for i in range(len(b)):
+                row_zero_count.append(np.sum(b[i] == 0))
+            for i in range(len(b[0])):
+                col_zero_count.append((np.sum(b[:, i] == 0)))
+                # Нажать порядок (ветка или столбец)
+            line_order = []
+            row_or_col = []
+            for i in range(len(b[0]), 0, -1):
+                while (i in row_zero_count):
+                    line_order.append(row_zero_count.index(i))
+                    row_or_col.append(0)
+                    row_zero_count[row_zero_count.index(i)] = 0
+                while (i in col_zero_count):
+                    line_order.append(col_zero_count.index(i))
+                    row_or_col.append(1)
+                    col_zero_count[col_zero_count.index(i)] = 0
+                    # Нарисуйте линию, покрывающую 0, и получите матрицу после строки минус минимальное значение и столбец плюс минимальное значение
+            delete_count_of_row = []
+            delete_count_of_rol = []
+            row_and_col = [i for i in range(len(b))]
+            for i in range(len(line_order)):
+                if row_or_col[i] == 0:
+                    delete_count_of_row.append(line_order[i])
+                else:
+                    delete_count_of_rol.append(line_order[i])
+                c = np.delete(b, delete_count_of_row, axis=0)
+                c = np.delete(c, delete_count_of_rol, axis=1)
+                line_count = len(delete_count_of_row) + len(delete_count_of_rol)
+                # Когда количество строк равно длине матрицы, выскакиваем
+                if line_count == len(b):
+                    break
+                    # Определяем, нужно ли рисовать линию, чтобы покрыть все нули, если она покрывает, операции сложения и вычитания
+                if 0 not in c:
+                    row_sub = list(set(row_and_col) - set(delete_count_of_row))
+                    min_value = np.min(c)
+                    for i in row_sub:
+                        b[i] = b[i] - min_value
+                    for i in delete_count_of_rol:
+                        b[:, i] = b[:, i] + min_value
+                    break
+        row_ind, col_ind = linear_sum_assignment(b)
+        min_cost = task_matrix[row_ind, col_ind].sum()
+        best_solution = list(task_matrix[row_ind, col_ind])
+        return min_cost, best_solution
+
 
 # Проверяет, входит ли заданный GET-параметр в URL
 def is_get_param_in_this_url(url, get):
@@ -37,12 +115,16 @@ def main(request):
         dictionary['tasks_for_ppr'] = tasks_for_ppr
         users_for_ppr = Executors.objects.all()[:len(post)]
         dict = {}
+
         for user in users_for_ppr:
             times = []
             for i in range(0,len(post)):
                 times.append(user.plain_execute_time+r.randint(0,10))
             dict[user.username] = times
         dictionary['user_times'] = dict
+
+        # Решение задачи о назначениях
+        task_matrix = np.array([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
 
         # dictionary['users_for_ppr'] = users_for_ppr
     return render(request, 'C:/Users/Andrey/PycharmProjects/djangoProject2/hunguaryMethod/templates/home.html', dictionary)

@@ -38,35 +38,32 @@
         <tr class="table table-success">
             <td><label for="{{ t.id }}" style="-moz-user-select: none;">{{ t.task_name }}</label></td>
             <td><label for="{{ t.id }}" style="-moz-user-select: none;">{{ t.type }}</label></td>
-            <td><input type="checkbox" id="{{ t.id }}" name="{{ t.id }}" class="form-check-input" checked></td>
+            <td><input type="checkbox" id="{{ t.id }}" name="{{ t.id }}" class="form-check-input"></td>
         </tr>
         {% endfor %}
-        <tr><td><button type="submit" class="btn btn-outline-primary">Распределить выбраные задачи</button></td><td></td><td></td></tr>
+        <tr><td><button type="submit" class="btn btn-primary">Распределить выбраные задачи</button></td><td></td><td><a class="btn btn-outline-dark" href="/home">Отмена</a></td></tr>
     </table>
     </div>
     </form>
 
+    {% if tasks_for_ppr %}
     <br>
     <br>
     <h1 style="text-align: center">Сгенерированная матрица задач:</h1>
     <br>
-    <br>
-    <table class="table table-primary" style="width: 1400px; margin: auto; text-align: center">
+    <table class="table table-primary table-hover table-striped table-bordered" style="width: 1400px; margin: auto; text-align: center">
     <tr>
         <td class="bg-success">Исполнитель / Задача</td>
     {% for tasked in  tasks_for_ppr %}
-        <td>{{ tasked.task_name }}</td>
+        <td style="color: black"><b>{{ tasked.task_name }}</b></td>
     {% endfor %}
 
-    {% for user in users_for_ppr %}
-        <td>{{ tasked.task_name }}</td>
-    {% endfor %}
     </tr>
 
 
     {% for key,value in user_times.items %}
         <tr>
-        <td>{{ key }}</td>
+            <td style="color: red"><b>{{ key }}</b></td>
         {% for v in value %}
             <td>{{ v }}</td>
         {% endfor %}
@@ -74,6 +71,8 @@
     {% endfor %}
 
     </table>
+
+    {% endif %}
 {#    {{ users_for_ppr }}#}
 {#    {{ user_times }}#}
 
