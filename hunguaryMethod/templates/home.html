@@ -26,7 +26,7 @@
 
     <form method="POST" action="/home/?start=1">
     {% csrf_token %}
-    <div style="margin-top: 120px; text-align: center">
+    <div style="margin-top: 60px; text-align: center">
         <h1 style="text-align: center">Распределение задач венгерским методом</h1><br><br>
     <table class="table table-bordered table-striped table-hover" style="width: 1000px; margin: auto">
         <tr class="table table-primary">
@@ -38,14 +38,17 @@
         <tr class="table table-success">
             <td><label for="{{ t.id }}" style="-moz-user-select: none;">{{ t.task_name }}</label></td>
             <td><label for="{{ t.id }}" style="-moz-user-select: none;">{{ t.type }}</label></td>
-            <td><input type="checkbox" id="{{ t.id }}" name="{{ t.id }}" class="form-check-input"></td>
+            <td><input type="checkbox" id="{{ t.id }}" name="{{ t.id }}" checked class="form-check-input"></td>
         </tr>
         {% endfor %}
-        <tr><td><button type="submit" class="btn btn-primary">Распределить выбраные задачи</button></td><td></td><td><a class="btn btn-outline-dark" href="/home">Отмена</a></td></tr>
+        <tr><td><button type="submit" class="btn btn-primary">Распределить выбранные задачи</button></td><td></td><td><a class="btn btn-outline-dark" href="/home">Отмена</a></td></tr>
     </table>
     </div>
     </form>
-
+{#{{ str }}#}
+{#{{ row }}#}
+{#{{ cost }}#}
+{#{{ control_matrix }}#}
     {% if tasks_for_ppr %}
     <br>
     <br>
@@ -65,7 +68,12 @@
         <tr>
             <td style="color: red"><b>{{ key }}</b></td>
         {% for v in value %}
-            <td>{{ v }}</td>
+            {% if ' ' in v %}
+                <td style="background-color: olive">{{ v }}</td>
+            {% else %}
+                <td>{{ v }}</td>
+            {% endif %}
+
         {% endfor %}
         <tr>
     {% endfor %}

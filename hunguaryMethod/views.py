@@ -3,11 +3,15 @@ from django.http import HttpRequest
 from django.http import HttpResponse
 from .models import *
 import random as r
+import itertools
 import numpy as np
+from numpy import random
+from scipy.optimize import linear_sum_assignment
+
 
 
 class TaskAssignment:
-
+    import sklearn
     # Инициализация класса, обязательными входными параметрами являются матрица задач и метод распределения, среди которых есть два метода распределения, метод all_permutation или метод Венгрии.
     def __init__(self, task_matrix, mode):
         self.task_matrix = task_matrix
@@ -15,7 +19,7 @@ class TaskAssignment:
         if mode == 'all_permutation':
             self.min_cost, self.best_solution = self.all_permutation(task_matrix)
         if mode == 'Hungary':
-            self.min_cost, self.best_solution, self.col_ind, self.row_ind, = self.Hungary(task_matrix)
+            self.min_cost, self.best_solution, self.row_ind, self.col_ind = self.Hungary(task_matrix)
 
         # Полный метод аранжировки
 
@@ -79,7 +83,7 @@ class TaskAssignment:
         row_ind, col_ind = linear_sum_assignment(b)
         min_cost = task_matrix[row_ind, col_ind].sum()
         best_solution = list(task_matrix[row_ind, col_ind])
-        return min_cost, best_solution
+        return min_cost, best_solution, row_ind, col_ind
 
 
 # Проверяет, входит ли заданный GET-параметр в URL
@@ -115,16 +119,47 @@ def main(request):
         dictionary['tasks_for_ppr'] = tasks_for_ppr
         users_for_ppr = Executors.objects.all()[:len(post)]
         dict = {}
+        for_assigment = []
 
         for user in users_for_ppr:
             times = []
             for i in range(0,len(post)):
                 times.append(user.plain_execute_time+r.randint(0,10))
             dict[user.username] = times
+            for_assigment.append(times)
         dictionary['user_times'] = dict
 
         # Решение задачи о назначениях
-        task_matrix = np.array([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
+        # Numpy структура для обработки матрицы
+        task_matrix = np.array(for_assigment)
+        assigment_by_Hun = TaskAssignment(task_matrix, 'Hungary')
+        # Матрица
+        control_matrix = assigment_by_Hun.task_matrix
+        control_i = assigment_by_Hun.row_ind
+        control_j = assigment_by_Hun.col_ind
+        main_matrix = []
 
-        # dictionary['users_for_ppr'] = users_for_ppr
-    return render(request, 'C:/Users/Andrey/PycharmProjects/djangoProject2/hunguaryMethod/templates/home.html', dictionary)
+        for i in range(0, len(control_matrix)):
+            interface_matrix = []
+            for l in range(0,len(control_matrix[i])):
+                if i == control_i[i] and l == control_j[i]:
+                    # control_matrix[i][l] = 300
+                    interface_matrix.append(str(control_matrix[i][l]) + ' ')
+                else:
+                    interface_matrix.append(str(control_matrix[i][l]))
+            main_matrix.append(interface_matrix)
+        m = 0
+        for user in users_for_ppr:
+            times = []
+            # for i in range(0,len(post)):
+            #     times.append(user.plain_execute_time+r.randint(0,10))
+            dict[user.username] = main_matrix[m]
+            for_assigment.append(times)
+            m = m + 1
+        dictionary['user_times'] = dict
+
+        dictionary['str']  = control_i
+        dictionary['row']  = control_j
+        dictionary['cost'] = assigment_by_Hun.min_cost
+        dictionary['control_matrix'] = main_matrix
+    return render(request, 'C:/Users/Andre/PycharmProjects/SPPR_course_w/hunguaryMethod/templates/home.html', dictionary)
