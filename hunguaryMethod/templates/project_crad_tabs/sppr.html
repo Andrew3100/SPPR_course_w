@@ -1,0 +1,83 @@
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div>
+{#                <p >Показать список кандидатов на выполнение задач</p>#}
+{#                <p >Скрыть список кандидатов на выполнение задач</p>#}
+                <p id="first" onclick="first()" style="text-align: center"><a class="btn btn-success">Показать список кандидатов</a></p>
+                <p id="first_yelloy" style="display:none; text-align: center" onclick="first_yelloy()"><a class="btn btn-success">Скрыть список кандидатов</a></p>
+                <div id="second_hide" style="display:none">
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-striped table-hover table-bordered text-center">
+                                    <tr>
+                                        <td>Исполнитель</td>
+                                        <td>Идентификатор задачи</td>
+                                        <td>Предложенное время решения</td>
+                                    </tr>
+
+                                    {% for auct1 in auct %}
+                                    <tr>
+                                        <td>{{ auct1.user_id }}</td>
+                                        <td>{{ auct1.task_id }}</td>
+                                        <td>{{ auct1.time }}</td>
+                                    </tr>
+                                    {% endfor %}
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="row">
+
+
+    <table class="table table-striped table-hover table-bordered text-center">
+        <tr>
+            <td>Создать контроллер для управления профилем</td>
+            <td>Создать модель товара и мигрировать её</td>
+            <td>Создать модель категории товара и мигрировать её</td>
+            <td>Создать BLADE-шаблон для работы с корзиной</td>
+            <td>Создать BLADE-шаблон для работы с профилем</td>
+            <td>Настройка ролевой системы на сервере</td>
+        </tr>
+        {% for el in control_matrix %}
+            <tr>
+                {% for el1 in el %}
+                    {% if ' ' in el1 %}
+                    <td class="bg-primary">{{ el1 }}</td>
+                        {% else %}
+                        <td>{{ el1 }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+
+
+</div><br>
+<div class="row">
+    <div class="col text-center">
+        <h3>Общая сумма временных затрат на выполнение всех задач равна {{ cost }} минут</h3>
+    </div>
+</div>
+<div class="row">
+    <h3>Распределение задач:</h3>
+    <h2>Иванов Павел Александрович - Создать контроллер для управления профилем</h2>
+    <h2>Степанов Николай Павлович - Создать модель товара и мигрировать её</h2>
+    <h2>Борисов Иван Николаевич - Создать модель категории товара и мигрировать её</h2>
+    <h2>Смолин Алексей Васильевич - Создать BLADE-шаблон для работы с корзиной</h2>
+    <h2>Петров Иван Александрович - Создать BLADE-шаблон для работы с профилем</h2>
+    <h2>Белов Алексей Степанович - Настройка ролевой системы на сервере</h2>
+</div>
+
+</div>

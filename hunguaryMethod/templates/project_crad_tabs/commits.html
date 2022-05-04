@@ -1,0 +1,23 @@
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped table-hover table-bordered text-center">
+    <tr>
+        <td>Сообщение коммита</td>
+        <td>Начало работы</td>
+        <td>Просмотреть коммит на GitHub</td>
+        <td>Время Commit&Push</td>
+    </tr>
+    {%  for commit in commits %}
+        <tr>
+            <td>{{ commit.commit_message }}</td>
+            <td>{{ commit.start_work }}</td>
+            <td><a href="https://github.com/Andrew3100/TestVKR/commit/{{ commit.sha }}" target="_blank">{{ commit.sha }}</a></td>
+            <td>{{ commit.commit_and_push_time}}</td>
+        </tr>
+    {% endfor %}
+</table>
+        </div>
+    </div>
+</div>

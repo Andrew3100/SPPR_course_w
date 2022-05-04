@@ -20,5 +20,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/', views.main),
+    path('git/', views.gitData),
+    path('projects/', views.projects),
+    path('project/', views.project_card)
 ]
