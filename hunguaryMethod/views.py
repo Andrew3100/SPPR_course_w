@@ -166,31 +166,31 @@ def project_card(request):
 
 
     # чтение коммитов проекта по API
-    git = Github("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")
-    repos = git.get_repo('Andrew3100/TestVKR')
-
-    dict_commit = {}
-
+    # git = Github("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")
+    # repos = git.get_repo('Andrew3100/TestVKR')
+    #
+    # dict_commit = {}
+    #
     dictionary['commits'] = sha_list = GitCommits.objects.all()
-    sha_inDB = []
-    for sha in sha_list:
-        sha_inDB.append(sha.sha)
-
-    for repo in repos.get_commits():
-        # print(repo.raw_data)
-        if repo.raw_data['commit']['message'] != 'Initial Commit' and repo.raw_data['sha'] not in sha_inDB:
-    #         шифр коммита, по нему можно проверить поступал ли такой коммит в базу
-            dict_commit['start_work'] = get_start_time_by_commit(repo.raw_data['commit']['message'])
-            dict_commit['commit_and_push_time'] = repo.raw_data['commit']['author']['date']
-            dict_commit['commit_message'] = repo.raw_data['commit']['message']
-            taskid = get_task_id_by_commit_message(repo.raw_data['commit']['message'])
-            dict_commit['task_id'] = taskid
-            dict_commit['project_id'] = request.GET['project_id']
-            dict_commit['sha'] = repo.raw_data['sha']
-            GitCommits(**dict_commit).save()
-            dict_close_task = {}
-            dict_close_task['closed'] = dict_commit['start_work'] = get_start_time_by_commit(repo.raw_data['commit']['message'])
-            close_task = Tasks.objects.filter(id=taskid).update(**dict_close_task)
+    # sha_inDB = []
+    # for sha in sha_list:
+    #     sha_inDB.append(sha.sha)
+    #
+    # for repo in repos.get_commits():
+    #     print(repo.raw_data)
+        # if repo.raw_data['commit']['message'] != 'Initial Commit' and repo.raw_data['sha'] not in sha_inDB:
+        #     шифр коммита, по нему можно проверить поступал ли такой коммит в базу
+            # dict_commit['start_work'] = get_start_time_by_commit(repo.raw_data['commit']['message'])
+            # dict_commit['commit_and_push_time'] = repo.raw_data['commit']['author']['date']
+            # dict_commit['commit_message'] = repo.raw_data['commit']['message']
+            # taskid = get_task_id_by_commit_message(repo.raw_data['commit']['message'])
+            # dict_commit['task_id'] = taskid
+            # dict_commit['project_id'] = request.GET['project_id']
+            # dict_commit['sha'] = repo.raw_data['sha']
+            # GitCommits(**dict_commit).save()
+            # dict_close_task = {}
+            # dict_close_task['closed'] = dict_commit['start_work'] = get_start_time_by_commit(repo.raw_data['commit']['message'])
+            # close_task = Tasks.objects.filter(id=taskid).update(**dict_close_task)
 
 
     d = {}
@@ -237,14 +237,22 @@ def project_card(request):
 
     # СППР
     for_assigment = [
-        [131,146,169,216,255,264],
-        [142,144,198,201,207,222],
-        [163,171,172,174,199,206],
-        [120,136,143,187,194,218],
-        [126,129,171,190,217,219],
-        [124,171,178,196,203,203]
+        [238,259,174,300,143,221],
+        [186,172,149,219,187,295],
+        [202,149,222,171,171,146],
+        [262,218,203,191,266,299],
+        [219,150,194,131,144,190],
+        [227,283,300,124,216,226]
     ]
+    # new = []
+    # for fo in for_assigment:
+    #     new1 = []
+    #     for f in fo:
+    #          new1.append(f + random.randint(7,15))
+    #     new.append(new1)
+
     task_matrix = np.array(for_assigment)
+
     assigment_by_Hun = TaskAssignment(task_matrix, 'Hungary')
     # Матрица
     control_matrix = assigment_by_Hun.task_matrix
@@ -281,13 +289,25 @@ def project_card(request):
 
 
 
-
-
-
-
-
-
-
+    # isp = Programmers.objects.all()
+    # arr = []
+    # for sp in isp:
+    #     arr.append(sp.firstname)
+    #
+    # data = []
+    # for a in arr:
+    #     res = AuctionTask.objects.raw(f'SELECT *,sum(time) as t FROM vkr.auction_task as auct INNER JOIN programmers as users ON users.id = auct.user_id WHERE firstname = "{a}"')
+    #     for re in res:
+    #         data.append(str(re.t) + ' ' + re.firstname)
+    #
+    # print(sorted(data))
+    #
+    # print(sorted(data)[0])
+    # print(sorted(data)[1])
+    # print(sorted(data)[2])
+    # print(sorted(data)[3])
+    # print(sorted(data)[4])
+    # print(sorted(data)[5])
 
 
 

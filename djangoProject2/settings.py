@@ -78,9 +78,9 @@ WSGI_APPLICATION = 'djangoProject2.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sppr',
+        'NAME': 'vkr',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
     }
 }
